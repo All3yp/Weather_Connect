@@ -18,6 +18,9 @@ struct ContentView: View {
                     .font(.largeTitle)
             }
             Text("Sunny outside.\nDon't forget your hat!")
+                .font(.body)
+                .multilineTextAlignment(.center)
+            Spacer()
         }
     }
 }
