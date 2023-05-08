@@ -9,29 +9,27 @@ import Foundation
 
 // MARK: - WeatherModel
 struct WeatherModel: Codable {
-    let data: DataClass
+    let data: WeatherData
 }
 
 // MARK: - DataClass
-struct DataClass: Codable {
-    let timelines: [Timeline]
+struct WeatherData: Codable {
+    let timelines: [WeatherTimelines]
 }
 
 // MARK: - Timeline
-struct Timeline: Codable {
-    let timestep: String
-    let endTime, startTime: Date
-    let intervals: [Interval]
+struct WeatherTimelines: Codable {
+    let intervals: [WeatherIntervals]
 }
 
 // MARK: - Interval
-struct Interval: Codable {
-    let startTime: Date
-    let values: Values
+struct WeatherIntervals: Codable {
+    let startTime: String
+    let values: WeatherValue
 }
 
 // MARK: - Values
-struct Values: Codable {
-    var weatherCode: Int?
-    let temperature: Double?
+struct WeatherValue: Codable {
+    var temperature: Double
+    var weatherCode: Int
 }

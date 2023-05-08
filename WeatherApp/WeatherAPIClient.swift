@@ -5,7 +5,7 @@
 //  Created by userext on 08/05/23.
 //
 
-import Foundation
+import SwiftUI
 import CoreLocation
 
 protocol WeatherAPIClientProtocol: AnyObject {
@@ -13,7 +13,7 @@ protocol WeatherAPIClientProtocol: AnyObject {
     func requestLocation()
 }
 
-final class WeatherAPIClient: NSObject, WeatherAPIClientProtocol {
+final class WeatherAPIClient: NSObject, ObservableObject, WeatherAPIClientProtocol {
     
     @Published var currentWeather: Weather?
     
@@ -40,23 +40,29 @@ final class WeatherAPIClient: NSObject, WeatherAPIClientProtocol {
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            let response = try JSONDecoder().decode(WeatherModel.self, from: data)
-            if let value = response.data.timelines.first?.intervals.first?.values {
-                if let temperature = value.temperature,
-                   let weatherCodeString = value.weatherCode,
-                   let weatherCode = WeatherCode(rawValue: "\(weatherCodeString)") {
-                    updateCurrentWeather(temperature: temperature, weatherCode: weatherCode)
-                } else {
-                    print("Missing weather data")
-                }
-            } else {
-                print("Missing weather data")
+            print("Response data: \(String(data: data, encoding: .utf8) ?? "Empty data")")
+            
+            guard let response = try? JSONDecoder().decode(WeatherModel.self, from: data) else {
+                print("Error decoding JSON response")
+                return
             }
+            
+            guard let value = response.data.timelines.first?.intervals.first?.values else {
+                print("Error parsing JSON response")
+                return
+            }
+            
+            guard let weatherCode = WeatherCode(rawValue: "\(String(describing: value.weatherCode))") else {
+                print("Unknown weather code: \(String(describing: value.weatherCode))")
+                return
+            }
+            
+            updateCurrentWeather(temperature: value.temperature, weatherCode: weatherCode)
+            
         } catch {
-            print(error.localizedDescription)
+            print("Error fetching weather: \(error.localizedDescription)")
         }
     }
-    
     func requestLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()

@@ -8,19 +8,42 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject private var weatherAPIClient = WeatherAPIClient()
+    
     var body: some View {
         VStack(alignment: .center, spacing: 10) {
             Spacer()
-            HStack(alignment: .center, spacing: 50) {
-                Image(systemName: "sun.max.fill")
-                    .font(.largeTitle)
-                Text("27º")
-                    .font(.largeTitle)
+            
+            if let currentWeather = weatherAPIClient.currentWeather {
+                
+                HStack(alignment: .center, spacing: 16) {
+                    currentWeather.weatherCode.image
+                        .font(.largeTitle)
+                    Text("\(currentWeather.temperature)º")
+                        .font(.largeTitle)
+                }
+                Text(currentWeather.weatherCode.description)
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                
+            } else {
+                Text("No weather info available yet.\nTap on refresh to fetch new data.\nMake sure you have enabled location permissions for the app.")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                
+                Button("Refresh", action: {
+                    Task {
+                        await weatherAPIClient.fetchWeather()
+                    }
+                })
             }
-            Text("Sunny outside.\nDon't forget your hat!")
-                .font(.body)
-                .multilineTextAlignment(.center)
             Spacer()
+        }
+        .onAppear {
+            Task {
+                await weatherAPIClient.fetchWeather()
+            }
         }
     }
 }
@@ -30,9 +53,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-
-/*
-
- curl --compressed --request GET --url \
- 'https://api.tomorrow.io/v4/timelines?location=40.75872069597532,-73.98529171943665&fields=temperature&timesteps=1h&units=metric&apikey=rGQBRaNgwSwHTignYBOXTOnCtG9pikn3'
- */
