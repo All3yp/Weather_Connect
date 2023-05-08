@@ -15,7 +15,7 @@ protocol WeatherAPIClientProtocol: AnyObject {
 
 final class WeatherAPIClient: NSObject, WeatherAPIClientProtocol {
     
-    var currentWeather: Values?
+    @Published var currentWeather: Weather?
     
     private let dateFormatter = ISO8601DateFormatter()
     private let locationManager = CLLocationManager()
@@ -38,8 +38,12 @@ final class WeatherAPIClient: NSObject, WeatherAPIClientProtocol {
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            if let response = try? JSONDecoder().decode(WeatherModel.self, from: data) {
-                currentWeather = response.data.timelines.first?.intervals.first?.values
+            if let response = try? JSONDecoder().decode(WeatherModel.self, from: data),
+               let value = response.data.timelines.first?.intervals.first?.values,
+               let weatherCode = WeatherCode(rawValue: "\(value.weatherCode)") {
+                DispatchQueue.main.async { [weak self] in
+                    self?.currentWeather = Weather(temperature: Int(value.temperature), weatherCode: weatherCode)
+                }
             }
         } catch {
             print(error.localizedDescription)
