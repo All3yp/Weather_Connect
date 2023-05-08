@@ -32,6 +32,6 @@ struct Interval: Codable {
 
 // MARK: - Values
 struct Values: Codable {
-    var weatherCode: Int
-    let temperature: Double
+    var weatherCode: Int?
+    let temperature: Double?
 }

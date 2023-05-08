@@ -8,6 +8,22 @@
 import Foundation
 import CoreLocation
 
+struct WeatherEndpoint {
+    let baseURL = "https://api.tomorrow.io/v4/timelines"
+    let location: CLLocation
+    let apiKey = "rGQBRaNgwSwHTignYBOXTOnCtG9pikn3"
+    let startTime: String
+    let endTime: String
+    
+    var url: URL? {
+        let fields = ["temperature", "weatherCode"]
+        let units = "metric"
+        let timesteps = "1h"
+        let urlString = "\(baseURL)?location=\(location.coordinate.latitude),\(location.coordinate.longitude)&fields=\(fields.joined(separator: ","))&units=\(units)&timesteps=\(timesteps)&startTime=\(startTime)&endTime=\(endTime)&apikey=\(apiKey)"
+        return URL(string: urlString)
+    }
+}
+
 protocol WeatherAPIClientProtocol: AnyObject {
     func fetchWeather() async
     func requestLocation()
@@ -32,18 +48,25 @@ final class WeatherAPIClient: NSObject, WeatherAPIClientProtocol {
             return
         }
         
-        guard let url = URL(string: "https://api.tomorrow.io/v4/timelines?location=\(location.coordinate.latitude),\(location.coordinate.longitude)&fields=temperature&fields=weatherCode&units=metric&timesteps=1h&startTime=\(dateFormatter.string(from: Date()))&endTime=\(dateFormatter.string(from: Date().addingTimeInterval(60 * 60)))&apikey=rGQBRaNgwSwHTignYBOXTOnCtG9pikn3") else {
+        guard let url = WeatherEndpoint(
+            location: location, startTime: dateFormatter.string(from: Date()),
+            endTime: dateFormatter.string(from: Date().addingTimeInterval(60 * 60))).url else {
             return
         }
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
-            if let response = try? JSONDecoder().decode(WeatherModel.self, from: data),
-               let value = response.data.timelines.first?.intervals.first?.values,
-               let weatherCode = WeatherCode(rawValue: "\(value.weatherCode)") {
-                DispatchQueue.main.async { [weak self] in
-                    self?.currentWeather = Weather(temperature: Int(value.temperature), weatherCode: weatherCode)
+            let response = try JSONDecoder().decode(WeatherModel.self, from: data)
+            if let value = response.data.timelines.first?.intervals.first?.values {
+                if let temperature = value.temperature,
+                   let weatherCodeString = value.weatherCode,
+                   let weatherCode = WeatherCode(rawValue: "\(weatherCodeString)") {
+                    updateCurrentWeather(temperature: temperature, weatherCode: weatherCode)
+                } else {
+                    print("Missing weather data")
                 }
+            } else {
+                print("Missing weather data")
             }
         } catch {
             print(error.localizedDescription)
@@ -53,6 +76,12 @@ final class WeatherAPIClient: NSObject, WeatherAPIClientProtocol {
     func requestLocation() {
         locationManager.requestWhenInUseAuthorization()
         locationManager.requestLocation()
+    }
+    
+    private func updateCurrentWeather(temperature: Double, weatherCode: WeatherCode) {
+        DispatchQueue.main.async { [weak self] in
+            self?.currentWeather = Weather(temperature: Int(temperature), weatherCode: weatherCode)
+        }
     }
     
 }
