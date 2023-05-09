@@ -73,6 +73,7 @@
 		648D68732A09C67800D62294 /* WeatherModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherModel.swift; sourceTree = "<group>"; };
 		648D68742A09C67800D62294 /* WeatherCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherCode.swift; sourceTree = "<group>"; };
 		648D68752A09C67800D62294 /* WeatherEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherEndpoint.swift; sourceTree = "<group>"; };
+		649DCF9C2A0AF64400A1088F /* WeatherWatchApp-Watch-App-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WeatherWatchApp-Watch-App-Info.plist"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +97,7 @@
 		6438052E2A09C5B20074A249 /* WeatherWatchApp Watch App */ = {
 			isa = PBXGroup;
 			children = (
+				649DCF9C2A0AF64400A1088F /* WeatherWatchApp-Watch-App-Info.plist */,
 				648D686D2A09C66500D62294 /* ContentView.swift */,
 				648D68742A09C67800D62294 /* WeatherCode.swift */,
 				648D68752A09C67800D62294 /* WeatherEndpoint.swift */,
@@ -306,9 +308,12 @@
 				DEVELOPMENT_ASSET_PATHS = "\"WeatherWatchApp Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WeatherWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = WeatherWatchApp;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Localization required to use";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.alley.WeatherApp;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -335,9 +340,12 @@
 				DEVELOPMENT_ASSET_PATHS = "\"WeatherWatchApp Watch App/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WeatherWatchApp-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = WeatherWatchApp;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Localization required to use";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.alley.WeatherApp;
+				INFOPLIST_KEY_WKRunsIndependentlyOfCompanionApp = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

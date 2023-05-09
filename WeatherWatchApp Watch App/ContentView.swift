@@ -12,15 +12,15 @@ struct ContentView: View {
     @StateObject private var weatherAPIClient = WeatherAPIClient()
     
     var body: some View {
-        VStack(alignment: .center, spacing: 10) {
+        VStack(alignment: .center, spacing: 13) {
             
             if let currentWeather = weatherAPIClient.currentWeather {
                 
-                HStack(alignment: .center, spacing: 16) {
+                HStack(alignment: .center, spacing: 15) {
                     currentWeather.weatherCode.image
-                        .font(.headline)
+                        .font(.title)
                     Text("\(currentWeather.temperature)º")
-                        .font(.headline)
+                        .font(.title)
                 }
                 Text(currentWeather.weatherCode.description)
                     .font(.body)
